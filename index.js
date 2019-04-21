@@ -33,6 +33,17 @@ app.post("/tx", function (req, res) {
     fs.writeFileSync("./data.json", JSON.stringify(data));
 });
 
+app.post("/tx/settle", function (req, res) {
+    const entry = data.transactions.find(tx => tx.id == req.body.id);
+    if (entry == null) {
+        return res.status(404).end();
+    }
+    entry.settled = req.body.settled;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(data.transactions));
+    fs.writeFileSync("./data.json", JSON.stringify(data));
+});
+
 app.put("/tx", function (req, res) {
     const entry = data.transactions.find(tx => tx.id == req.body.id);
     if (entry == null) {

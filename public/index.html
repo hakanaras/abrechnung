@@ -85,14 +85,72 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr is="tx-table-row" @new-tx-data="onNewTxData" creator="true"></tr>
+                    <tr is="tx-table-row" @new-tx-data="onNewTxData" :creator="true"></tr>
                     <tr is="tx-table-row" @new-tx-data="onNewTxData" v-for="tx in filteredTransactions" :tx="tx"
                         :key="tx.id"></tr>
                 </tbody>
             </table>
         </div>
         <div v-if="activeView == 'annual'">
-            <h1>Gewinnversteuerung</h1>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Jahr: </span>
+                            </div>
+                            <input type="number" step="1" class="form-control" v-model="annualYear">
+                        </div>
+                    </div>
+                    <div class="col-md-8"></div>
+                    <div class="col-md-6">
+                        <table class="table table-sm" id="annual-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th style="width: 1%; text-align: right;">Betrag</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Einnahmen</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.incomeSum) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Ausgaben</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.expenseSum) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Summe</td>
+                                    <td class="text-nowrap text-right">{{ currencyFormat(annual.sum) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Pensionsversicherung</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.pvBeitrag) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Krankenversicherung</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.kvBeitrag) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Unfallversicherung</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.uvBeitrag) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Einkommenssteuer</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.est) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
