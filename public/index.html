@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/4/sandstone/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="vue-app" class="container-fluid">
+        <div class="text-center">
+            <div class="btn-group mb-3" role="group">
+                <button v-for="view in views" type="button" @click="activeView = view.id"
+                    :class="{'btn': true, 'btn-sm': true, 'btn-secondary': activeView != view.id, 'btn-primary': activeView == view.id}">
+                    {{ view.label }}
+                </button>
+            </div>
+        </div>
+        <div class="container" v-if="activeView == 'transactions'">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Suche: </span>
+                        </div>
+                        <input type="text" class="form-control" v-model="txSearchTerm">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Von: </span>
+                        </div>
+                        <input type="date" class="form-control" v-model="txFromDate">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Bis: </span>
+                        </div>
+                        <input type="date" class="form-control" v-model="txToDate">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Ausgaben: </span>
+                        </div>
+                        <input type="text" class="form-control text-danger" readonly
+                            :value="currencyFormat(filteredTransactions.expenseSum)">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Einnahmen: </span>
+                        </div>
+                        <input type="text" class="form-control" readonly
+                            :value="currencyFormat(filteredTransactions.incomeSum)">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Summe: </span>
+                        </div>
+                        <input :class="{'text-danger': filteredTransactions.sum < 0}" type="text" class="form-control"
+                            readonly :value="currencyFormat(filteredTransactions.sum)">
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th style="width: 1%;">Datum</th>
+                        <th style="width: 1%;">Betrag</th>
+                        <th>Beschreibung</th>
+                        <th style="width: 1%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr is="tx-table-row" @new-tx-data="onNewTxData" creator="true"></tr>
+                    <tr is="tx-table-row" @new-tx-data="onNewTxData" v-for="tx in filteredTransactions" :tx="tx"
+                        :key="tx.id"></tr>
+                </tbody>
+            </table>
+        </div>
+        <div v-if="activeView == 'annual'">
+            <h1>Gewinnversteuerung</h1>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    padding: 15px 0;
+    font-family: 'Lato', sans-serif;
+}
+
+.text-right .table-cell-input {
+    text-align: right;
+}
+
+.table-cell-input {
+    display: block;
+    background: none;
+    border: none;
+    width: calc(100% + 10px);
+    min-width: 80px;
+    margin: -5px;
+    padding: 5px;
+}
+
+.table-ctrl-btn {
+    padding: 3px;
+    font-size: 12px;
+    line-height: 1;
+}
+
+tr.bg-success {
+    background-color: #93C54B55 !important;
+}
+
+tr.bg-warning {
+    background-color: #F47C3C55 !important;
+}
