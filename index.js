@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-app.listen(80);
+app.listen(process.env.PORT || 80);
 
 if (!fs.existsSync("./data.json")) {
     fs.writeFileSync("./data.json", "{\"idCounter\": 0, \"transactions\": []}");
