@@ -42,6 +42,9 @@ Vue.component("tx-table-row", {
             this.editing = false;
         },
         onClickDelete: function () {
+            if (!window.confirm("'" + this.tx.description + "' löschen?")) {
+                return;
+            }
             $.ajax({ url: "/tx", type: "DELETE", data: { id: this.tx.id }, success: data => { this.$emit("new-tx-data", data); } });
         },
         onChng: function () {
