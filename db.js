@@ -24,8 +24,13 @@ async function selectAll() {
     return result.rows;
 }
 
-async function insertTx() {
+async function insertTx(date, amount, description) {
     const result = await client.query(`INSERT INTO transactions VALUES ($1, $2, $3, $4)`, [date, amount, description, null]);
+    return selectAll();
+}
+
+async function settleTx(id, settled) {
+    const result = await client.query(`UPDATE transactions SET settled = $1 WHERE id = $2`, [settled, id]);
     return selectAll();
 }
 

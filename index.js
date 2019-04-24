@@ -21,19 +21,13 @@ app.get("/tx", async function (req, res) {
 app.post("/tx", async function (req, res) {
     const result = await db.insertTx(req.body.date, req.body.amount, req.body.description);
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(data.transactions));
+    res.end(JSON.stringify(result));
 });
 
 app.post("/tx/settle", async function (req, res) {
-    return res.status(500);
-    const entry = data.transactions.find(tx => tx.id == req.body.id);
-    if (entry == null) {
-        return res.status(404).end();
-    }
-    entry.settled = req.body.settled;
+    const result = await db.settleTx(req.body.id, req.body.settled);
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(data.transactions));
-    fs.writeFileSync("./data.json", JSON.stringify(data));
+    res.end(JSON.stringify(result));
 });
 
 app.put("/tx", async function (req, res) {
