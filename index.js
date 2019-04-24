@@ -18,13 +18,13 @@ app.get("/tx", async function (req, res) {
     res.end(JSON.stringify(result));
 });
 
-app.post("/tx", function (req, res) {
+app.post("/tx", async function (req, res) {
     const result = await db.insertTx(req.body.date, req.body.amount, req.body.description);
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(data.transactions));
 });
 
-app.post("/tx/settle", function (req, res) {
+app.post("/tx/settle", async function (req, res) {
     return res.status(500);
     const entry = data.transactions.find(tx => tx.id == req.body.id);
     if (entry == null) {
@@ -36,7 +36,7 @@ app.post("/tx/settle", function (req, res) {
     fs.writeFileSync("./data.json", JSON.stringify(data));
 });
 
-app.put("/tx", function (req, res) {
+app.put("/tx", async function (req, res) {
     return res.status(500);
     const entry = data.transactions.find(tx => tx.id == req.body.id);
     if (entry == null) {
@@ -50,7 +50,7 @@ app.put("/tx", function (req, res) {
     fs.writeFileSync("./data.json", JSON.stringify(data));
 });
 
-app.delete("/tx", function (req, res) {
+app.delete("/tx", async function (req, res) {
     return res.status(500);
     const index = data.transactions.findIndex(element => element.id == req.body.id);
     data.transactions.splice(index, 1);
