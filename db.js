@@ -20,7 +20,7 @@ async function createTable() {
 }
 
 async function selectAll() {
-    const result = await client.query(`SELECT *, TO_CHAR(date_, 'YYYY-MM-DD') as \"date\" FROM transactions`);
+    const result = await client.query(`SELECT id, amount, description, TO_CHAR(settled, 'YYYY-MM-DD') as "settled", TO_CHAR(date_, 'YYYY-MM-DD') as \"date\" FROM transactions`);
     return result.rows;
 }
 
@@ -34,4 +34,14 @@ async function settleTx(id, settled) {
     return selectAll();
 }
 
-module.exports = { createTable, selectAll, insertTx, settleTx };
+async function updateTx(id, date, amount, description) {
+    const result = await client.query(`UPDATE transactions SET date_ = $1, amount = $2, description = $3 WHERE id = $4`, [date, amount, description, id]);
+    return selectAll();
+}
+
+async function deleteTx(id) {
+    const result = await client.query(`DELETE FROM transactions WHERE id = $1`, [id]);
+    return selectAll();
+}
+
+module.exports = { createTable, selectAll, insertTx, settleTx, updateTx, deleteTx };

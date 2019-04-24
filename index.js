@@ -31,24 +31,13 @@ app.post("/tx/settle", async function (req, res) {
 });
 
 app.put("/tx", async function (req, res) {
-    return res.status(500);
-    const entry = data.transactions.find(tx => tx.id == req.body.id);
-    if (entry == null) {
-        return res.status(404).end();
-    }
-    entry.date = req.body.date;
-    entry.amount = req.body.amount;
-    entry.description = req.body.description;
+    const result = await db.updateTx(req.body.id, req.body.date, req.body.amount, req.body.description);
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(data.transactions));
-    fs.writeFileSync("./data.json", JSON.stringify(data));
+    res.end(JSON.stringify(result));
 });
 
 app.delete("/tx", async function (req, res) {
-    return res.status(500);
-    const index = data.transactions.findIndex(element => element.id == req.body.id);
-    data.transactions.splice(index, 1);
+    const result = await db.deleteTx(req.body.id);
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(data.transactions));
-    fs.writeFileSync("./data.json", JSON.stringify(data));
+    res.end(JSON.stringify(result));
 });
