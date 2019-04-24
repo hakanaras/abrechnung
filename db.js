@@ -20,7 +20,7 @@ async function createTable() {
 }
 
 async function selectAll() {
-    const result = await client.query(`SELECT * FROM transactions`);
+    const result = await client.query(`SELECT *, TO_CHAR(date_, 'YYYY-MM-DD') as \"date\" FROM transactions`);
     return result.rows;
 }
 

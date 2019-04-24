@@ -64,7 +64,7 @@ Vue.component("tx-table-row", {
     },
     data: function () {
         return {
-            dateInput: this.creator ? new Date().toISOString().substr(0, 10) : this.tx.date_,
+            dateInput: this.creator ? new Date().toISOString().substr(0, 10) : this.tx.date,
             amountInput: this.creator ? 0 : this.tx.amount,
             descInput: this.creator ? "" : this.tx.description,
             settledInput: this.tx && this.tx.settled ? this.tx.settled : new Date().toISOString().substr(0, 10),
@@ -140,7 +140,7 @@ new Vue({
                 return typeof value == "string" ? parseFloat(value) : value;
             }
             const byDescription = this.transactions.filter(t => t.description.toLowerCase().indexOf(this.txSearchTerm.toLowerCase()) >= 0);
-            const byDate = byDescription.filter(t => (!this.txFromDate || this.txFromDate <= t.date_) && (!this.txToDate || this.txToDate >= t.date_));
+            const byDate = byDescription.filter(t => (!this.txFromDate || this.txFromDate <= t.date) && (!this.txToDate || this.txToDate >= t.date));
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
             byDate.sum = -byDate.reduce(((a, t) => a - asNumber(t.amount)), 0);
@@ -169,7 +169,7 @@ new Vue({
             const kvMinGrundlage = 5256.60;
             const maxGrundlage = 71820;
 
-            const byDate = this.transactions.filter(t => this.annualYear + "-01-01" <= t.date_ && this.annualYear + "-12-31" >= t.date_);
+            const byDate = this.transactions.filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date);
 
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
