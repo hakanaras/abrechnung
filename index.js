@@ -1,5 +1,5 @@
 const express = require("express");
-const fs = require("fs");
+const db = require("./db");
 
 const app = express();
 
@@ -10,17 +10,16 @@ app.use(express.static("public"));
 
 app.listen(process.env.PORT || 80);
 
-if (!fs.existsSync("./data.json")) {
-    fs.writeFileSync("./data.json", "{\"idCounter\": 0, \"transactions\": []}");
-}
-const data = require("./data.json");
+db.createTable();
 
-app.get("/tx", function (req, res) {
+app.get("/tx", async function (req, res) {
+    const result = await db.selectAll();
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(data.transactions));
+    res.end(JSON.stringify(result));
 });
 
 app.post("/tx", function (req, res) {
+    return res.status(500);
     data.transactions.push({
         id: data.idCounter++,
         date: req.body.date,
@@ -34,6 +33,7 @@ app.post("/tx", function (req, res) {
 });
 
 app.post("/tx/settle", function (req, res) {
+    return res.status(500);
     const entry = data.transactions.find(tx => tx.id == req.body.id);
     if (entry == null) {
         return res.status(404).end();
@@ -45,6 +45,7 @@ app.post("/tx/settle", function (req, res) {
 });
 
 app.put("/tx", function (req, res) {
+    return res.status(500);
     const entry = data.transactions.find(tx => tx.id == req.body.id);
     if (entry == null) {
         return res.status(404).end();
@@ -58,6 +59,7 @@ app.put("/tx", function (req, res) {
 });
 
 app.delete("/tx", function (req, res) {
+    return res.status(500);
     const index = data.transactions.findIndex(element => element.id == req.body.id);
     data.transactions.splice(index, 1);
     res.setHeader("Content-Type", "application/json");
