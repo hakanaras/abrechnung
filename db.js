@@ -25,7 +25,7 @@ async function selectAll() {
 }
 
 async function insertTx(date, amount, description) {
-    const result = await client.query(`INSERT INTO transactions VALUES ($1, $2, $3, $4)`, [date, amount, description, null]);
+    const result = await client.query(`INSERT INTO transactions (date_, amount, description, settled) VALUES ($1, $2, $3, $4)`, [date, amount, description, null]);
     return selectAll();
 }
 
@@ -34,4 +34,4 @@ async function settleTx(id, settled) {
     return selectAll();
 }
 
-module.exports = { createTable, selectAll, insertTx };
+module.exports = { createTable, selectAll, insertTx, settleTx };
