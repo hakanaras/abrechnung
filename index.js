@@ -25,7 +25,7 @@ app.post("/tx", async function (req, res) {
 });
 
 app.post("/tx/settle", async function (req, res) {
-    const result = await db.settleTx(req.body.id, req.body.settled);
+    const result = await db.settleTx(req.body.id, req.body.settled || null);
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(result));
 });
