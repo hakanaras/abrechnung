@@ -20,7 +20,7 @@ async function createTable() {
 }
 
 async function selectAll() {
-    const result = await client.query(`SELECT id, amount, description, TO_CHAR(settled, 'YYYY-MM-DD') as "settled", TO_CHAR(date_, 'YYYY-MM-DD') as \"date\" FROM transactions`);
+    const result = await client.query(`SELECT id, amount, description, TO_CHAR(settled, 'YYYY-MM-DD') as "settled", TO_CHAR(date_, 'YYYY-MM-DD') as \"date\" FROM transactions ORDER BY date_ DESC`);
     return result.rows;
 }
 
