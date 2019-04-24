@@ -19,17 +19,9 @@ app.get("/tx", async function (req, res) {
 });
 
 app.post("/tx", function (req, res) {
-    return res.status(500);
-    data.transactions.push({
-        id: data.idCounter++,
-        date: req.body.date,
-        amount: req.body.amount,
-        description: req.body.description,
-        settled: false
-    });
+    const result = await db.insertTx(req.body.date, req.body.amount, req.body.description);
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(data.transactions));
-    fs.writeFileSync("./data.json", JSON.stringify(data));
 });
 
 app.post("/tx/settle", function (req, res) {
