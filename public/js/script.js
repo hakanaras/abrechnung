@@ -12,11 +12,10 @@ Vue.mixin({
 Vue.component("tx-table-row", {
     methods: {
         onChangeDeductionType: function () {
-            $.post("/sql", {
-                command: "UPDATE transactions SET deductionType='" + this.deductionTypeInput + "' WHERE id=" + this.tx.id
-            }, data => {
-                console.dir(data)
-            });
+            const command = "UPDATE transactions SET deductionType='" + this.deductionTypeInput + "' WHERE id=" + this.tx.id;
+            this.tx.deductionType = this.deductionTypeInput;
+            console.dir(command);
+            $.post("/sql", { command }, console.dir);
         },
         onClickAdd: function () {
             if (!this.dateInput) {
