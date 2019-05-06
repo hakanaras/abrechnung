@@ -13,7 +13,7 @@ Vue.component("tx-table-row", {
     methods: {
         onChangeDeductionType: function () {
             $.post("/sql", {
-                command: "UPDATE transactions SET deductionType='" + this.deductionType + "' WHERE id=" + this.tx.id
+                command: "UPDATE transactions SET deductionType='" + this.deductionTypeInput + "' WHERE id=" + this.tx.id
             }, data => {
                 console.dir(data)
             });
@@ -75,7 +75,7 @@ Vue.component("tx-table-row", {
             amountInput: this.creator ? 0 : this.tx.amount,
             descInput: this.creator ? "" : this.tx.description,
             settledInput: this.tx && this.tx.settled ? this.tx.settled : new Date().toISOString().substr(0, 10),
-            deductionTypeInput: this.tx.deductionType,
+            deductionTypeInput: this.tx && this.tx.deductionType ? this.tx.deductionType : "normal",
             editing: false
         };
     },
@@ -196,7 +196,9 @@ new Vue({
             const kvMinGrundlage = 5256.60;
             const maxGrundlage = 71820;
 
-            const byDate = this.transactions.filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date);
+            const byDate = this.transactions
+                .filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date)
+                .filter(t => t.deductionType != "none");
 
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
