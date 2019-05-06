@@ -134,7 +134,7 @@ Vue.component("tx-table-row", {
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <select class="form-control" v-model="deductionType">
+                            <select class="form-control" v-model="tx.deductionType">
                                 <option>Normal</option>
                                 <option value="none">Nicht abgerechnet (Keine Rechnung)</option>
                             </select>
