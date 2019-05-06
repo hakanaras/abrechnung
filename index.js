@@ -10,7 +10,11 @@ app.use(express.static("public"));
 
 app.listen(process.env.PORT || 80);
 
-db.createTable();
+app.post("/sql", async function (req, res) {
+    const result = await db.sql(req.body.command);
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(result));
+});
 
 app.get("/tx", async function (req, res) {
     const result = await db.selectAll();

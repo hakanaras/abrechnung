@@ -7,16 +7,9 @@ const client = new Client({
 
 client.connect();
 
-client.query("CREATE TABLE IF NOT EXISTS transactions")
-
-async function createTable() {
-    const result = await client.query(`CREATE TABLE IF NOT EXISTS transactions (
-        id SERIAL PRIMARY KEY,
-        date_ DATE NOT NULL,
-        amount NUMERIC(15,2) NOT NULL,
-        description TEXT NOT NULL,
-        settled DATE
-    );`);
+async function sql(command) {
+    const result = await client.query(command);
+    return result;
 }
 
 async function selectAll() {
@@ -44,4 +37,4 @@ async function deleteTx(id) {
     return selectAll();
 }
 
-module.exports = { createTable, selectAll, insertTx, settleTx, updateTx, deleteTx };
+module.exports = { sql, selectAll, insertTx, settleTx, updateTx, deleteTx };
