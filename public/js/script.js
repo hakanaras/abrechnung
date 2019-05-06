@@ -69,6 +69,7 @@ Vue.component("tx-table-row", {
         }
     },
     data: function () {
+        console.dir(this.tx);
         return {
             dateInput: this.creator ? new Date().toISOString().substr(0, 10) : this.tx.date,
             amountInput: this.creator ? 0 : this.tx.amount,
