@@ -123,10 +123,10 @@ Vue.component("tx-table-row", {
                     </div>
                 </div>
             </div>
-            <button v-if="!creator" type="button" class="btn table-ctrl-btn btn-secondary" data-toggle="modal" :data-target="'#settings-modal-' + tx.id">
+            <button v-if="!creator" type="button" class="btn table-ctrl-btn btn-primary" data-toggle="modal" :data-target="'#settings-modal-' + tx.id">
                 <i class="fas fa-ellipsis-h"></i>
             </button>
-            <div v-if="!creator" :id="'#settings-modal-' + tx.id" class="modal fade" role="dialog">
+            <div v-if="!creator" :id="'settings-modal-' + tx.id" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
