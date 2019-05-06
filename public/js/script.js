@@ -123,6 +123,25 @@ Vue.component("tx-table-row", {
                     </div>
                 </div>
             </div>
+            <button v-if="!creator" type="button" class="btn table-ctrl-btn btn-secondary" data-toggle="modal" :data-target="'#settings-modal-' + tx.id">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <div v-if="!creator" :id="'#settings-modal-' + tx.id" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">{{ tx.description }}</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <select class="form-control" v-model="deductionType">
+                                <option>Normal</option>
+                                <option value="none">Nicht abgerechnet (Keine Rechnung)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>`
 });
