@@ -11,6 +11,13 @@ Vue.mixin({
 
 Vue.component("tx-table-row", {
     methods: {
+        onChangeDeductionType: function () {
+            $.post("/sql", {
+                command: "UPDATE transactions SET deductionType='" + this.tx.deductionType + "' WHERE id=" + this.tx.id
+            }, data => {
+                console.dir(data)
+            });
+        },
         onClickAdd: function () {
             if (!this.dateInput) {
                 return window.alert("Ungültiges Datum!");
@@ -134,8 +141,8 @@ Vue.component("tx-table-row", {
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <select class="form-control" v-model="tx.deductionType">
-                                <option>Normal</option>
+                            <select class="form-control" v-model="tx.deductionType" @change="onChangeDeductionType">
+                                <option value="normal">Normal</option>
                                 <option value="none">Nicht abgerechnet (Keine Rechnung)</option>
                             </select>
                         </div>
