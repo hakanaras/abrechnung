@@ -13,7 +13,7 @@ Vue.component("tx-table-row", {
     methods: {
         onChangeDeductionType: function () {
             $.post("/sql", {
-                command: "UPDATE transactions SET deductionType='" + this.tx.deductionType + "' WHERE id=" + this.tx.id
+                command: "UPDATE transactions SET deductionType='" + this.deductionType + "' WHERE id=" + this.tx.id
             }, data => {
                 console.dir(data)
             });
@@ -75,6 +75,7 @@ Vue.component("tx-table-row", {
             amountInput: this.creator ? 0 : this.tx.amount,
             descInput: this.creator ? "" : this.tx.description,
             settledInput: this.tx && this.tx.settled ? this.tx.settled : new Date().toISOString().substr(0, 10),
+            deductionTypeInput: this.tx.deductionType,
             editing: false
         };
     },
@@ -141,7 +142,7 @@ Vue.component("tx-table-row", {
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <select class="form-control" v-model="tx.deductionType" @change="onChangeDeductionType">
+                            <select class="form-control" v-model="deductionTypeInput" @change="onChangeDeductionType">
                                 <option value="normal">Normal</option>
                                 <option value="none">Nicht abgerechnet (Keine Rechnung)</option>
                             </select>
