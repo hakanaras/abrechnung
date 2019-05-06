@@ -13,7 +13,7 @@
         <div class="input-group input-group-sm">
             <input type="text" class="form-control" v-model="sqlCommand">
             <div class="input-group-append">
-                <button type="button" class="btn btn-success">Execute</button>
+                <button type="button" class="btn btn-success" @click="executeSql">Execute</button>
             </div>
         </div>
     </div>
@@ -27,7 +27,11 @@
             el: '#vue-app',
             methods: {
                 executeSql: function () {
-                    console.dir("Execute: " + this.sqlCommand + "!");
+                    $.post("/sql", {
+                        command: this.sqlCommand
+                    }, data => {
+                        console.dir(data);
+                    });
                 }
             },
             data: {
