@@ -143,8 +143,8 @@ Vue.component("tx-table-row", {
                         </div>
                         <div class="modal-body">
                             <select class="form-control" v-model="deductionTypeInput" @change="onChangeDeductionType">
-                                <option value="normal">Normal</option>
-                                <option value="none">Nicht abgerechnet (Keine Rechnung)</option>
+                                <option :selected="!deductionTypeInput || deductionTypeInput == 'normal'" value="normal">Normal</option>
+                                <option :selected="deductionTypeInput == 'none'" value="none">Nicht abgerechnet (Keine Rechnung)</option>
                             </select>
                         </div>
                     </div>
