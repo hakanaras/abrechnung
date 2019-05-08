@@ -13,9 +13,11 @@ Vue.component("tx-table-row", {
     methods: {
         onClickDeductionType: function (type) {
             const command = "UPDATE transactions SET deductionType='" + type + "' WHERE id=" + this.tx.id;
-            this.tx.deductionType = type;
-            console.dir(command);
-            $.post("/sql", { command }, console.dir);
+            $.post("/sql", { command }, () => {
+                $.get("/tx", data => {
+                    this.$emit("new-tx-data", data);
+                });
+            });
         },
         onClickAdd: function () {
             if (!this.dateInput) {
