@@ -69,13 +69,12 @@ Vue.component("tx-table-row", {
         }
     },
     data: function () {
-        console.dir(this.tx);
         return {
             dateInput: this.creator ? new Date().toISOString().substr(0, 10) : this.tx.date,
             amountInput: this.creator ? 0 : this.tx.amount,
             descInput: this.creator ? "" : this.tx.description,
-            settledInput: this.tx && this.tx.settled ? this.tx.settled : new Date().toISOString().substr(0, 10),
-            deductionTypeInput: this.tx && this.tx.deductionType ? this.tx.deductionType : "normal",
+            settledInput: (this.tx && this.tx.settled) ? this.tx.settled : new Date().toISOString().substr(0, 10),
+            deductionTypeInput: (this.tx && this.tx.deductionType) ? this.tx.deductionType : "normal",
             editing: false
         };
     },
@@ -142,9 +141,9 @@ Vue.component("tx-table-row", {
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <select class="form-control" v-model="deductionTypeInput" @change="onChangeDeductionType">
-                                <option :selected="!deductionTypeInput || deductionTypeInput == 'normal'" value="normal">Normal</option>
-                                <option :selected="deductionTypeInput == 'none'" value="none">Nicht abgerechnet (Keine Rechnung)</option>
+                            <select class="form-control" v-model="deductionTypeInput">
+                                <option value="normal">Normal</option>
+                                <option value="none">Nicht abgerechnet (Keine Rechnung)</option>
                             </select>
                         </div>
                     </div>
