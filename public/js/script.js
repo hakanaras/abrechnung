@@ -98,45 +98,47 @@ Vue.component("tx-table-row", {
             <button v-if="editing" type="button" class="btn btn-success table-ctrl-btn" @click="onClickSave">
                 <i class="fas fa-save"></i>
             </button>
-            <button v-if="!creator" type="button" class="btn btn-danger table-ctrl-btn" @click="onClickDelete">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-            <button v-if="!creator && tx.amount > 0" type="button"
-                class="btn table-ctrl-btn" :class="{'btn-success': tx.settled, 'btn-warning': !tx.settled}"
-                data-toggle="modal" :data-target="'#settle-modal-' + tx.id">
-                    <i class="fas fa-euro-sign"></i> {{tx.settled ? tx.settled : "Unbeglichen"}}
-            </button>
-            <div v-if="!creator && tx.amount > 0" :id="'settle-modal-' + tx.id" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">{{ tx.description }}</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                {{ tx.settled ? "Diese Rechnung wurde beglichen am: " + tx.settled : "Diese Rechnung ist noch unbeglichen." }}
-                            </p>
-                            <div class="input-group mb-3">
-                                <input type="date" class="form-control" v-model="settledInput">
-                                <div class="input-group-append" id="button-addon4">
-                                    <button type="button"
-                                    class="btn btn-sm" :class="{'btn-success': !tx.settled, 'btn-warning': tx.settled}"
-                                    :disabled="settledInput == tx.settled" @click="onClickSettle()">
-                                        {{ tx.settled ? "Ändern" : "Begleichen" }}
-                                    </button>
+            <span v-if="!creator">
+                <button type="button" class="btn btn-danger table-ctrl-btn" @click="onClickDelete">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <button v-if="tx.amount > 0" type="button"
+                    class="btn table-ctrl-btn" :class="{'btn-success': tx.settled, 'btn-warning': !tx.settled}"
+                    data-toggle="modal" :data-target="'#settle-modal-' + tx.id">
+                        <i class="fas fa-euro-sign"></i> {{tx.settled ? tx.settled : "Unbeglichen"}}
+                </button>
+                <div v-if="tx.amount > 0" :id="'settle-modal-' + tx.id" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{ tx.description }}</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    {{ tx.settled ? "Diese Rechnung wurde beglichen am: " + tx.settled : "Diese Rechnung ist noch unbeglichen." }}
+                                </p>
+                                <div class="input-group mb-3">
+                                    <input type="date" class="form-control" v-model="settledInput">
+                                    <div class="input-group-append" id="button-addon4">
+                                        <button type="button"
+                                        class="btn btn-sm" :class="{'btn-success': !tx.settled, 'btn-warning': tx.settled}"
+                                        :disabled="settledInput == tx.settled" @click="onClickSettle()">
+                                            {{ tx.settled ? "Ändern" : "Begleichen" }}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <button v-if="!creator && tx.deductionType != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
-                <i class="fas fa-file-invoice-dollar"></i> {{tx.deductionType}}
-            </button>
-            <button v-if="!creator && tx.deductionType == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
-                <i class="fas fa-comment-dollar"></i> {{tx.deductionType}}
-            </button>
+                <button v-if="tx.deductionType != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
+                    <i class="fas fa-file-invoice-dollar"></i> {{tx.deductionType}}
+                </button>
+                <button v-if="tx.deductionType == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
+                    <i class="fas fa-comment-dollar"></i> {{tx.deductionType}}
+                </button>
+            </span>
         </td>
     </tr>`
 });
