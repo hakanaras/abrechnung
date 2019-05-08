@@ -129,25 +129,12 @@ Vue.component("tx-table-row", {
                     </div>
                 </div>
             </div>
-            <button v-if="!creator" type="button" class="btn table-ctrl-btn btn-primary" data-toggle="modal" :data-target="'#settings-modal-' + tx.id">
-                <i class="fas fa-ellipsis-h"></i>
+            <button v-if="!creator && tx.deductionType != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
+                <i class="fas fa-file-invoice-dollar"></i>
             </button>
-            <div v-if="!creator" :id="'settings-modal-' + tx.id" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">{{ tx.description }}</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-secondary" :class="{'active': !tx.deductionType || tx.deductionType == 'normal'}" data-toggle="button" @click="onClickDeductionType('normal')">Normal</button>
-                                <button type="button" class="btn btn-secondary" :class="{'active': tx.deductionType == 'none'}" data-toggle="button" @click="onClickDeductionType('none')">Nicht abgesetzt</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <button v-if="!creator && tx.deductionType == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
+                <i class="fas fa-comment-dollar"></i>
+            </button>
         </td>
     </tr>`
 });
