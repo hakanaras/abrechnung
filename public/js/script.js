@@ -132,11 +132,11 @@ Vue.component("tx-table-row", {
                         </div>
                     </div>
                 </div>
-                <button v-if="tx.deductionType != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
-                    <i class="fas fa-file-invoice-dollar"></i> {{tx.deductionType}}
+                <button v-if="tx.deductiontype != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
+                    <i class="fas fa-file-invoice-dollar"></i> {{tx.deductiontype}}
                 </button>
-                <button v-if="tx.deductionType == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
-                    <i class="fas fa-comment-dollar"></i> {{tx.deductionType}}
+                <button v-if="tx.deductiontype == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
+                    <i class="fas fa-comment-dollar"></i> {{tx.deductiontype}}
                 </button>
             </span>
         </td>
@@ -187,7 +187,7 @@ new Vue({
 
             const byDate = this.transactions
                 .filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date)
-                .filter(t => t.deductionType != "none");
+                .filter(t => t.deductiontype != "none");
 
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
