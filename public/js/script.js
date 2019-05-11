@@ -133,10 +133,10 @@ Vue.component("tx-table-row", {
                     </div>
                 </div>
                 <button v-if="tx.deductiontype != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
-                    <i class="fas fa-file-invoice-dollar"></i> {{tx.deductiontype}}
+                    <i class="fas fa-file-invoice-dollar"></i>
                 </button>
                 <button v-if="tx.deductiontype == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
-                    <i class="fas fa-comment-dollar"></i> {{tx.deductiontype}}
+                    <i class="fas fa-comment-dollar"></i>
                 </button>
             </span>
         </td>
