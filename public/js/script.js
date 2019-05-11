@@ -104,7 +104,7 @@ Vue.component("tx-table-row", {
                 </button>
                 <button v-if="tx.amount > 0" type="button"
                     class="btn table-ctrl-btn" :class="{'btn-success': tx.settled, 'btn-warning': !tx.settled}"
-                    data-toggle="modal" :data-target="'#settle-modal-' + tx.id" :title="tx.settled ? ("Beglichen am: " + tx.settled) : "Unbeglichen"">
+                    data-toggle="modal" :data-target="'#settle-modal-' + tx.id" :title="tx.settled ? ('Beglichen am: ' + tx.settled) : 'Unbeglichen'">
                         <i class="fas fa-euro-sign"></i>
                 </button>
                 <div v-if="tx.amount > 0" :id="'settle-modal-' + tx.id" class="modal fade" role="dialog">
