@@ -154,7 +154,7 @@ Vue.component("tx-table-row", {
                         :title="tx.vat_included ? 'Vorsteuer enthalten' : 'Keine Vorsteuer enthalten'">
                     <i class="fas fa-percentage"></i>
                 </button>
-                <button type="button" class="btn table-ctrl-btn"
+                <button v-if="tx.deductiontype != 'none'" type="button" class="btn table-ctrl-btn"
                         :class="{'btn-success': tx.money_transfer, 'btn-warning': !tx.money_transfer}"
                         @click="onClickMoneyTransfer()"
                         :title="tx.money_transfer ? 'Echter Geldaustausch' : 'Keine echter Geldaustausch'">
@@ -207,16 +207,17 @@ new Vue({
             const maxGrundlage = 71820;
 
             const byDate = this.transactions
-                .filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date)
-                .filter(t => t.deductiontype != "none");
+                .filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date);
 
-            byDate.vatSum = byDate.reduce((a, t) => t.vat_included ? a + asNumber(t.amount) : a, 0);
+            const deduced = byDate.filter(t => t.deductiontype != "none");
 
-            byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
-            byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
-            byDate.sum = -byDate.reduce(((a, t) => a - asNumber(t.amount)), 0);
+            byDate.vatSum = deduced.reduce((a, t) => t.vat_included ? a + asNumber(t.amount) : a, 0);
 
-            const realTxs = byDate.filter(t => t.money_transfer);
+            byDate.expenseSum = deduced.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
+            byDate.incomeSum = deduced.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
+            byDate.sum = -deduced.reduce(((a, t) => a - asNumber(t.amount)), 0);
+
+            const realTxs = byDate.filter(t => t.money_transfer || t.deductiontype == "none");
 
             byDate.realExpenseSum = realTxs.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.realIncomeSum = realTxs.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
