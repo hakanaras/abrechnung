@@ -145,6 +145,11 @@
                                     <td class="text-nowrap text-right">
                                         {{ currencyFormat(annual.est) }}</td>
                                 </tr>
+                                <tr>
+                                    <td>Vorsteuersumme</td>
+                                    <td class="text-nowrap text-right">{{currencyFormat(annual.vatSum)}}
+                                        ({{currencyFormat(annual.vatSum / 6)}})</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

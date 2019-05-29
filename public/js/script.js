@@ -11,6 +11,11 @@ Vue.mixin({
 
 Vue.component("tx-table-row", {
     methods: {
+        onClickVatIncluded: function () {
+            $.post("/tx/vat_included", { id: this.tx.id, vat_included: !this.tx.vat_included }, data => {
+                this.$emit("new-tx-data", data);
+            });
+        },
         onClickDeductionType: function (type) {
             const command = "UPDATE transactions SET deductionType='" + type + "' WHERE id=" + this.tx.id;
             $.post("/sql", { command }, () => {
@@ -132,6 +137,12 @@ Vue.component("tx-table-row", {
                         </div>
                     </div>
                 </div>
+                <button type="button" class="btn table-ctrl-btn"
+                        :class="{'btn-success': tx.vat_included, 'btn-warning': !tx.vat_included}"
+                        @click="onClickVatIncluded()",
+                        :title="tx.vat_included ? 'Vorsteuer enthalten' : 'Keine Vorsteuer enthalten'">
+                    <i class="fas fa-percentage"></i>
+                </button>
                 <button v-if="tx.deductiontype != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
                     <i class="fas fa-file-invoice-dollar"></i>
                 </button>
@@ -189,6 +200,7 @@ new Vue({
                 .filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date)
                 .filter(t => t.deductiontype != "none");
 
+            byDate.vatSum = byData.reduce((a, t) => t.vat_included ? a + asNumber(t.amount) : a, 0);
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
             byDate.sum = -byDate.reduce(((a, t) => a - asNumber(t.amount)), 0);
