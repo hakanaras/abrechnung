@@ -200,7 +200,7 @@ new Vue({
                 .filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date)
                 .filter(t => t.deductiontype != "none");
 
-            byDate.vatSum = byData.reduce((a, t) => t.vat_included ? a + asNumber(t.amount) : a, 0);
+            byDate.vatSum = byDate.reduce((a, t) => t.vat_included ? a + asNumber(t.amount) : a, 0);
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
             byDate.sum = -byDate.reduce(((a, t) => a - asNumber(t.amount)), 0);
