@@ -177,7 +177,16 @@ new Vue({
             function asNumber(value) {
                 return typeof value == "string" ? parseFloat(value) : value;
             }
-            const byDescription = this.transactions.filter(t => t.description.toLowerCase().indexOf(this.txSearchTerm.toLowerCase()) >= 0);
+
+            const descTerms = this.txSearchTerm.toLowerCase().split(";");
+            const byDescription = this.transactions.filter(t => {
+                for (const descTerm of descTerms) {
+                    if (t.description.toLowerCase().indexOf(descTerm) >= 0) {
+                        return true;
+                    }
+                }
+                return false;
+            });
             const byDate = byDescription.filter(t => (!this.txFromDate || this.txFromDate <= t.date) && (!this.txToDate || this.txToDate >= t.date));
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
