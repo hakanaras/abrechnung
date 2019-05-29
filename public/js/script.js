@@ -142,6 +142,12 @@ Vue.component("tx-table-row", {
                         </div>
                     </div>
                 </div>
+                <button v-if="tx.deductiontype != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </button>
+                <button v-if="tx.deductiontype == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
+                    <i class="fas fa-comment-dollar"></i>
+                </button>
                 <button v-if="tx.deductiontype != 'none'" type="button" class="btn table-ctrl-btn"
                         :class="{'btn-success': tx.vat_included, 'btn-warning': !tx.vat_included}"
                         @click="onClickVatIncluded()"
@@ -153,12 +159,6 @@ Vue.component("tx-table-row", {
                         @click="onClickMoneyTransfer()"
                         :title="tx.money_transfer ? 'Echter Geldaustausch' : 'Keine echter Geldaustausch'">
                     <i class="fas fa-money-bill-wave-alt"></i>
-                </button>
-                <button v-if="tx.deductiontype != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                </button>
-                <button v-if="tx.deductiontype == 'none'" type="button" class="btn btn-warning table-ctrl-btn" @click="onClickDeductionType('normal')" title="Wird nicht verrechnet (Keine Rechnung)">
-                    <i class="fas fa-comment-dollar"></i>
                 </button>
             </span>
         </td>
