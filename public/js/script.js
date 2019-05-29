@@ -11,6 +11,11 @@ Vue.mixin({
 
 Vue.component("tx-table-row", {
     methods: {
+        onClickMoneyTransfer: function () {
+            $.post("/tx/money_transfer", { id: this.tx.id, money_transfer: !this.tx.money_transfer }, data => {
+                this.$emit("new-tx-data", data);
+            });
+        },
         onClickVatIncluded: function () {
             $.post("/tx/vat_included", { id: this.tx.id, vat_included: !this.tx.vat_included }, data => {
                 this.$emit("new-tx-data", data);
@@ -137,11 +142,17 @@ Vue.component("tx-table-row", {
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn table-ctrl-btn"
+                <button v-if="tx.deductiontype != 'none'" type="button" class="btn table-ctrl-btn"
                         :class="{'btn-success': tx.vat_included, 'btn-warning': !tx.vat_included}"
                         @click="onClickVatIncluded()"
                         :title="tx.vat_included ? 'Vorsteuer enthalten' : 'Keine Vorsteuer enthalten'">
                     <i class="fas fa-percentage"></i>
+                </button>
+                <button type="button" class="btn table-ctrl-btn"
+                        :class="{'btn-success': tx.money_transfer, 'btn-warning': !tx.money_transfer}"
+                        @click="onClickMoneyTransfer()"
+                        :title="tx.money_transfer ? 'Echter Geldaustausch' : 'Keine echter Geldaustausch'">
+                    <i class="fas fa-money-bill-wave-alt"></i>
                 </button>
                 <button v-if="tx.deductiontype != 'none'" type="button" class="btn btn-success table-ctrl-btn" @click="onClickDeductionType('none')" title="Wird normal verrechnet (Rechnung vorhanden)">
                     <i class="fas fa-file-invoice-dollar"></i>
@@ -186,7 +197,6 @@ new Vue({
                     const bracketAmount = Math.min(bracket[0] - last, Math.max(0, amount - last));
                     sum += bracketAmount * bracket[1];
                     last = bracket[0];
-                    console.log(bracketAmount + ":" + bracket[1] + ":" + sum);
                 }
                 return sum;
             }
@@ -201,9 +211,16 @@ new Vue({
                 .filter(t => t.deductiontype != "none");
 
             byDate.vatSum = byDate.reduce((a, t) => t.vat_included ? a + asNumber(t.amount) : a, 0);
+
             byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
             byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
             byDate.sum = -byDate.reduce(((a, t) => a - asNumber(t.amount)), 0);
+
+            const realTxs = byDate.filter(t => t.money_transfer);
+
+            byDate.realExpenseSum = realTxs.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
+            byDate.realIncomeSum = realTxs.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
+            byDate.realSum = -realTxs.reduce(((a, t) => a - asNumber(t.amount)), 0);
 
             const pvBeitrag = Math.min(Math.max(byDate.sum, pvMinGrundlage), maxGrundlage) * 0.185;
             byDate.pvBeitrag = pvBeitrag;

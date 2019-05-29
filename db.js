@@ -13,12 +13,17 @@ async function sql(command) {
 }
 
 async function selectAll() {
-    const result = await client.query(`SELECT id, amount, description, TO_CHAR(settled, 'YYYY-MM-DD') as "settled", TO_CHAR(date_, 'YYYY-MM-DD') as \"date\", deductionType, vat_included FROM transactions ORDER BY date_ DESC, id DESC`);
+    const result = await client.query(`SELECT id, amount, description, TO_CHAR(settled, 'YYYY-MM-DD') as "settled", TO_CHAR(date_, 'YYYY-MM-DD') as \"date\", deductionType, vat_included, money_transfer FROM transactions ORDER BY date_ DESC, id DESC`);
     return result.rows;
 }
 
 async function setVatIncluded(id, vatIncluded) {
     const result = await client.query(`UPDATE transactions SET vat_included = $1 WHERE id = $2`, [vatIncluded, id]);
+    return selectAll();
+}
+
+async function setMoneyTransfer(id, money_transfer) {
+    const result = await client.query(`UPDATE transactions SET money_transfer = $1 WHERE id = $2`, [money_transfer, id]);
     return selectAll();
 }
 
@@ -42,4 +47,4 @@ async function deleteTx(id) {
     return selectAll();
 }
 
-module.exports = { sql, selectAll, setVatIncluded, insertTx, settleTx, updateTx, deleteTx };
+module.exports = { sql, selectAll, setVatIncluded, setMoneyTransfer, insertTx, settleTx, updateTx, deleteTx };

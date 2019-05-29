@@ -112,18 +112,32 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Einnahmen</td>
+                                    <td>Offizielle Einnahmen</td>
                                     <td class="text-nowrap text-right">
                                         {{ currencyFormat(annual.incomeSum) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Ausgaben</td>
+                                    <td>Echte Einnahmen</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.realIncomeSum) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Offizielle Ausgaben</td>
                                     <td class="text-nowrap text-right">
                                         {{ currencyFormat(annual.expenseSum) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Summe</td>
+                                    <td>Echte Ausgaben</td>
+                                    <td class="text-nowrap text-right">
+                                        {{ currencyFormat(annual.realExpenseSum) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Offizielle Summe</td>
                                     <td class="text-nowrap text-right">{{ currencyFormat(annual.sum) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Echte Summe</td>
+                                    <td class="text-nowrap text-right">{{ currencyFormat(annual.realSum) }}</td>
                                 </tr>
                                 <tr>
                                     <td>Pensionsversicherung</td>

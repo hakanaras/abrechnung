@@ -34,6 +34,12 @@ app.post("/tx/vat_included", async function (req, res) {
     res.end(JSON.stringify(result));
 });
 
+app.post("/tx/money_transfer", async function (req, res) {
+    const result = await db.setMoneyTransfer(req.body.id, req.body.money_transfer);
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(result));
+});
+
 app.post("/tx/settle", async function (req, res) {
     const result = await db.settleTx(req.body.id, req.body.settled || null);
     res.setHeader("Content-Type", "application/json");
