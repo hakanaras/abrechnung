@@ -139,7 +139,7 @@ Vue.component("tx-table-row", {
                 </div>
                 <button type="button" class="btn table-ctrl-btn"
                         :class="{'btn-success': tx.vat_included, 'btn-warning': !tx.vat_included}"
-                        @click="onClickVatIncluded()",
+                        @click="onClickVatIncluded()"
                         :title="tx.vat_included ? 'Vorsteuer enthalten' : 'Keine Vorsteuer enthalten'">
                     <i class="fas fa-percentage"></i>
                 </button>
