@@ -1,181 +1,247 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://bootswatch.com/4/sandstone/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+  </head>
 
-<head>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://bootswatch.com/4/sandstone/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-</head>
-
-<body>
+  <body>
     <div id="vue-app" class="container-fluid">
-        <div class="text-center">
-            <div class="btn-group mb-3" role="group">
-                <button v-for="view in views" type="button" @click="activeView = view.id"
-                    :class="{'btn': true, 'btn-sm': true, 'btn-secondary': activeView != view.id, 'btn-primary': activeView == view.id}">
-                    {{ view.label }}
-                </button>
-            </div>
+      <div class="text-center">
+        <div class="btn-group mb-3" role="group">
+          <button
+            v-for="view in views"
+            type="button"
+            @click="activeView = view.id"
+            :class="{'btn': true, 'btn-sm': true, 'btn-secondary': activeView != view.id, 'btn-primary': activeView == view.id}"
+          >
+            {{ view.label }}
+          </button>
         </div>
-        <div class="container" v-if="activeView == 'transactions'">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Suche: </span>
-                        </div>
-                        <input type="text" class="form-control" v-model="txSearchTerm">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Von: </span>
-                        </div>
-                        <input type="date" class="form-control" v-model="txFromDate">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Bis: </span>
-                        </div>
-                        <input type="date" class="form-control" v-model="txToDate">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Ausgaben: </span>
-                        </div>
-                        <input type="text" class="form-control text-danger" readonly
-                            :value="currencyFormat(filteredTransactions.expenseSum)">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Einnahmen: </span>
-                        </div>
-                        <input type="text" class="form-control" readonly
-                            :value="currencyFormat(filteredTransactions.incomeSum)">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Summe: </span>
-                        </div>
-                        <input :class="{'text-danger': filteredTransactions.sum < 0}" type="text" class="form-control"
-                            readonly :value="currencyFormat(filteredTransactions.sum)">
-                    </div>
-                </div>
+      </div>
+      <div class="container" v-if="activeView == 'transactions'">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Suche: </span>
+              </div>
+              <input type="text" class="form-control" v-model="txSearchTerm" />
             </div>
-            <table class="table table-bordered table-sm">
+          </div>
+          <div class="col-lg-4">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Von: </span>
+              </div>
+              <input type="date" class="form-control" v-model="txFromDate" />
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Bis: </span>
+              </div>
+              <input type="date" class="form-control" v-model="txToDate" />
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Ausgaben: </span>
+              </div>
+              <input
+                type="text"
+                class="form-control text-danger"
+                readonly
+                :value="currencyFormat(filteredTransactions.expenseSum)"
+              />
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Einnahmen: </span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                readonly
+                :value="currencyFormat(filteredTransactions.incomeSum)"
+              />
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Summe: </span>
+              </div>
+              <input
+                :class="{'text-danger': filteredTransactions.sum < 0}"
+                type="text"
+                class="form-control"
+                readonly
+                :value="currencyFormat(filteredTransactions.sum)"
+              />
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <button
+              v-for="dataKey in ['settled', 'official', 'vat_included', 'money_transfer']"
+              type="button"
+              :class="'btn table-ctrl-btn mr-2 mb-3 ' + {'': 'btn-outline-secondary', 'yes': 'btn-primary', 'no': 'btn-warning'}[filterToggles[dataKey]]"
+              @click="onClickToggleFilterButton(dataKey)"
+              style="width: 32px;"
+            >
+              <i :class="filterToggleClass[dataKey]"></i>
+            </button>
+          </div>
+        </div>
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th style="width: 1%;">Datum</th>
+              <th style="width: 1%;">Betrag</th>
+              <th>Beschreibung</th>
+              <th style="width: 1%;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              is="tx-table-row"
+              @new-tx-data="onNewTxData"
+              :creator="true"
+            ></tr>
+            <tr
+              is="tx-table-row"
+              @new-tx-data="onNewTxData"
+              v-for="tx in filteredTransactions"
+              :tx="tx"
+              :key="tx.id"
+            ></tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-if="activeView == 'annual'">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Jahr: </span>
+                </div>
+                <input
+                  type="number"
+                  step="1"
+                  class="form-control"
+                  v-model="annualYear"
+                />
+              </div>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-6">
+              <table class="table table-sm" id="annual-table">
                 <thead>
-                    <tr>
-                        <th style="width: 1%;">Datum</th>
-                        <th style="width: 1%;">Betrag</th>
-                        <th>Beschreibung</th>
-                        <th style="width: 1%;"></th>
-                    </tr>
+                  <tr>
+                    <th></th>
+                    <th style="width: 1%; text-align: right;">Betrag</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <tr is="tx-table-row" @new-tx-data="onNewTxData" :creator="true"></tr>
-                    <tr is="tx-table-row" @new-tx-data="onNewTxData" v-for="tx in filteredTransactions" :tx="tx"
-                        :key="tx.id"></tr>
+                  <tr>
+                    <td>Offizielle Einnahmen</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.incomeSum) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Echte Einnahmen</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.realIncomeSum) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Offizielle Ausgaben</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.expenseSum) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Echte Ausgaben</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.realExpenseSum) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Offizielle Summe</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.sum) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Echte Summe</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.realSum) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Pensionsversicherung</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.pvBeitrag) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Krankenversicherung</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.kvBeitrag) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Unfallversicherung</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.uvBeitrag) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Einkommenssteuer</td>
+                    <td class="text-nowrap text-right">
+                      {{ currencyFormat(annual.est) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Vorsteuersumme</td>
+                    <td class="text-nowrap text-right">
+                      {{currencyFormat(annual.vatSum)}}
+                      ({{currencyFormat(annual.vatSum / 6)}})
+                    </td>
+                  </tr>
                 </tbody>
-            </table>
-        </div>
-        <div v-if="activeView == 'annual'">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Jahr: </span>
-                            </div>
-                            <input type="number" step="1" class="form-control" v-model="annualYear">
-                        </div>
-                    </div>
-                    <div class="col-md-8"></div>
-                    <div class="col-md-6">
-                        <table class="table table-sm" id="annual-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th style="width: 1%; text-align: right;">Betrag</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Offizielle Einnahmen</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.incomeSum) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Echte Einnahmen</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.realIncomeSum) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Offizielle Ausgaben</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.expenseSum) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Echte Ausgaben</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.realExpenseSum) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Offizielle Summe</td>
-                                    <td class="text-nowrap text-right">{{ currencyFormat(annual.sum) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Echte Summe</td>
-                                    <td class="text-nowrap text-right">{{ currencyFormat(annual.realSum) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Pensionsversicherung</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.pvBeitrag) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Krankenversicherung</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.kvBeitrag) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Unfallversicherung</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.uvBeitrag) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Einkommenssteuer</td>
-                                    <td class="text-nowrap text-right">
-                                        {{ currencyFormat(annual.est) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Vorsteuersumme</td>
-                                    <td class="text-nowrap text-right">{{currencyFormat(annual.vatSum)}}
-                                        ({{currencyFormat(annual.vatSum / 6)}})</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+              </table>
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
     <script src="js/script.js"></script>
-</body>
-
+  </body>
 </html>

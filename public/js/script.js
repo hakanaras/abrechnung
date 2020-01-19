@@ -1,96 +1,131 @@
 Vue.mixin({
-    methods: {
-        currencyFormat: function (value) {
-            if (typeof value == "string") {
-                value = parseFloat(value);
-            }
-            return "€ " + value.toFixed(2);
-        }
+  methods: {
+    currencyFormat: function(value) {
+      if (typeof value == "string") {
+        value = parseFloat(value);
+      }
+      return "€ " + value.toFixed(2);
     }
+  }
 });
 
 Vue.component("tx-table-row", {
-    methods: {
-        onClickMoneyTransfer: function () {
-            $.post("/tx/money_transfer", { id: this.tx.id, money_transfer: !this.tx.money_transfer }, data => {
-                this.$emit("new-tx-data", data);
-            });
-        },
-        onClickVatIncluded: function () {
-            $.post("/tx/vat_included", { id: this.tx.id, vat_included: !this.tx.vat_included }, data => {
-                this.$emit("new-tx-data", data);
-            });
-        },
-        onClickDeductionType: function (type) {
-            const command = "UPDATE transactions SET deductionType='" + type + "' WHERE id=" + this.tx.id;
-            $.post("/sql", { command }, () => {
-                $.get("/tx", data => {
-                    this.$emit("new-tx-data", data);
-                });
-            });
-        },
-        onClickAdd: function () {
-            if (!this.dateInput) {
-                return window.alert("Ungültiges Datum!");
-            }
-            $.post("/tx", {
-                date: this.dateInput,
-                amount: this.amountInput,
-                description: this.descInput
-            }, data => {
-                this.$emit("new-tx-data", data);
-            });
-            this.amountInput = 0;
-            this.descInput = "";
-        },
-        onClickSave: function () {
-            if (!this.dateInput) {
-                return window.alert("Ungültiges Datum!");
-            }
-            $.ajax({
-                url: "/tx", type: "PUT", data: {
-                    id: this.tx.id,
-                    date: this.dateInput,
-                    amount: this.amountInput,
-                    description: this.descInput
-                }, success: data => {
-                    this.$emit("new-tx-data", data);
-                }
-            });
-            this.editing = false;
-        },
-        onClickDelete: function () {
-            if (!window.confirm("'" + this.tx.description + "' löschen?")) {
-                return;
-            }
-            $.ajax({ url: "/tx", type: "DELETE", data: { id: this.tx.id }, success: data => { this.$emit("new-tx-data", data); } });
-        },
-        onChng: function () {
-            if (this.creator) {
-                return;
-            }
-            this.editing = true;
-        },
-        onClickSettle: function () {
-            $.post("/tx/settle", {
-                id: this.tx.id,
-                settled: this.settledInput
-            }, data => {
-                this.$emit("new-tx-data", data);
-            });
+  methods: {
+    onClickMoneyTransfer: function() {
+      $.post(
+        "/tx/money_transfer",
+        { id: this.tx.id, money_transfer: !this.tx.money_transfer },
+        data => {
+          this.$emit("new-tx-data", data);
         }
+      );
     },
-    data: function () {
-        return {
-            dateInput: this.creator ? new Date().toISOString().substr(0, 10) : this.tx.date,
-            amountInput: this.creator ? 0 : this.tx.amount,
-            descInput: this.creator ? "" : this.tx.description,
-            settledInput: (this.tx && this.tx.settled) ? this.tx.settled : new Date().toISOString().substr(0, 10),
-            editing: false
-        };
+    onClickVatIncluded: function() {
+      $.post(
+        "/tx/vat_included",
+        { id: this.tx.id, vat_included: !this.tx.vat_included },
+        data => {
+          this.$emit("new-tx-data", data);
+        }
+      );
     },
-    props: ["tx", "creator"],
-    template: `
+    onClickDeductionType: function(type) {
+      const command =
+        "UPDATE transactions SET deductionType='" +
+        type +
+        "' WHERE id=" +
+        this.tx.id;
+      $.post("/sql", { command }, () => {
+        $.get("/tx", data => {
+          this.$emit("new-tx-data", data);
+        });
+      });
+    },
+    onClickAdd: function() {
+      if (!this.dateInput) {
+        return window.alert("Ungültiges Datum!");
+      }
+      $.post(
+        "/tx",
+        {
+          date: this.dateInput,
+          amount: this.amountInput,
+          description: this.descInput
+        },
+        data => {
+          this.$emit("new-tx-data", data);
+        }
+      );
+      this.amountInput = 0;
+      this.descInput = "";
+    },
+    onClickSave: function() {
+      if (!this.dateInput) {
+        return window.alert("Ungültiges Datum!");
+      }
+      $.ajax({
+        url: "/tx",
+        type: "PUT",
+        data: {
+          id: this.tx.id,
+          date: this.dateInput,
+          amount: this.amountInput,
+          description: this.descInput
+        },
+        success: data => {
+          this.$emit("new-tx-data", data);
+        }
+      });
+      this.editing = false;
+    },
+    onClickDelete: function() {
+      if (!window.confirm("'" + this.tx.description + "' löschen?")) {
+        return;
+      }
+      $.ajax({
+        url: "/tx",
+        type: "DELETE",
+        data: { id: this.tx.id },
+        success: data => {
+          this.$emit("new-tx-data", data);
+        }
+      });
+    },
+    onChng: function() {
+      if (this.creator) {
+        return;
+      }
+      this.editing = true;
+    },
+    onClickSettle: function() {
+      $.post(
+        "/tx/settle",
+        {
+          id: this.tx.id,
+          settled: this.settledInput
+        },
+        data => {
+          this.$emit("new-tx-data", data);
+        }
+      );
+    }
+  },
+  data: function() {
+    return {
+      dateInput: this.creator
+        ? new Date().toISOString().substr(0, 10)
+        : this.tx.date,
+      amountInput: this.creator ? 0 : this.tx.amount,
+      descInput: this.creator ? "" : this.tx.description,
+      settledInput:
+        this.tx && this.tx.settled
+          ? this.tx.settled
+          : new Date().toISOString().substr(0, 10),
+      editing: false
+    };
+  },
+  props: ["tx", "creator"],
+  template: `
     <tr :class="{'bg-success': creator, 'bg-warning': editing}">
         <td class="text-nowrap">
             <input type="date" v-model="dateInput" class="table-cell-input" @change="onChng()" @keydown="onChng()">
@@ -166,103 +201,190 @@ Vue.component("tx-table-row", {
 });
 
 new Vue({
-    el: '#vue-app',
-    created: function () {
-        $.get("/tx", data => {
-            this.transactions = data;
-        });
-    },
-    computed: {
-        filteredTransactions: function () {
-            function asNumber(value) {
-                return typeof value == "string" ? parseFloat(value) : value;
-            }
+  el: "#vue-app",
+  created: function() {
+    $.get("/tx", data => {
+      this.transactions = data;
+    });
+  },
+  computed: {
+    filteredTransactions: function() {
+      function asNumber(value) {
+        return typeof value == "string" ? parseFloat(value) : value;
+      }
 
-            const descTerms = this.txSearchTerm.toLowerCase().split(";");
-            const byDescription = this.transactions.filter(t => {
-                for (const descTerm of descTerms) {
-                    if (t.description.toLowerCase().indexOf(descTerm) >= 0) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-            const byDate = byDescription.filter(t => (!this.txFromDate || this.txFromDate <= t.date) && (!this.txToDate || this.txToDate >= t.date));
-            byDate.expenseSum = byDate.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
-            byDate.incomeSum = byDate.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
-            byDate.sum = -byDate.reduce(((a, t) => a - asNumber(t.amount)), 0);
-            return byDate;
-        },
-        annual: function () {
-            function asNumber(value) {
-                return typeof value == "string" ? parseFloat(value) : value;
-            }
-
-            function eSt(amount) {
-                const brackets = [[11000, 0], [18000, 0.25], [31000, 0.35], [60000, 0.42], [90000, 0.48], [999999999, 0.5]];
-                let last = 0;
-                let sum = 0;
-                for (const bracket of brackets) {
-                    const bracketAmount = Math.min(bracket[0] - last, Math.max(0, amount - last));
-                    sum += bracketAmount * bracket[1];
-                    last = bracket[0];
-                }
-                return sum;
-            }
-
-            const uvBeitrag = 117.49;
-            const pvMinGrundlage = 7851;
-            const kvMinGrundlage = 5256.60;
-            const maxGrundlage = 71820;
-
-            const byDate = this.transactions
-                .filter(t => this.annualYear + "-01-01" <= t.date && this.annualYear + "-12-31" >= t.date);
-
-            const deduced = byDate.filter(t => t.deductiontype != "none");
-
-            byDate.vatSum = deduced.reduce((a, t) => t.vat_included ? a + asNumber(t.amount) : a, 0);
-
-            byDate.expenseSum = deduced.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
-            byDate.incomeSum = deduced.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
-            byDate.sum = -deduced.reduce(((a, t) => a - asNumber(t.amount)), 0);
-
-            const realTxs = byDate.filter(t => t.money_transfer || t.deductiontype == "none");
-
-            byDate.realExpenseSum = realTxs.reduce(((a, t) => asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a), 0);
-            byDate.realIncomeSum = realTxs.reduce(((a, t) => asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a), 0);
-            byDate.realSum = -realTxs.reduce(((a, t) => a - asNumber(t.amount)), 0);
-
-            const pvBeitrag = Math.min(Math.max(byDate.sum, pvMinGrundlage), maxGrundlage) * 0.185;
-            byDate.pvBeitrag = pvBeitrag;
-            const kvBeitrag = Math.min(Math.max(byDate.sum, kvMinGrundlage), maxGrundlage) * 0.0765;
-            byDate.kvBeitrag = this.annualYear < 2021 ? 402.12 : kvBeitrag;
-            byDate.uvBeitrag = uvBeitrag;
-
-            byDate.est = eSt(byDate.sum);
-
-            return byDate;
+      const descTerms = this.txSearchTerm.toLowerCase().split(";");
+      const byDescription = this.transactions.filter(t => {
+        for (const descTerm of descTerms) {
+          if (t.description.toLowerCase().indexOf(descTerm) >= 0) {
+            return true;
+          }
         }
+        return false;
+      });
+      const byDate = byDescription.filter(
+        t =>
+          (!this.txFromDate || this.txFromDate <= t.date) &&
+          (!this.txToDate || this.txToDate >= t.date)
+      );
+      let final = byDate;
+      if (this.filterToggles.settled != "") {
+        final = final.filter(
+          t =>
+            t.amount > 0 && t.settled == (this.filterToggles.settled == "yes")
+        );
+      }
+      if (this.filterToggles.official != "") {
+        final = final.filter(
+          t =>
+            (t.deductiontype == "normal") ==
+            (this.filterToggles.official == "yes")
+        );
+      }
+      if (this.filterToggles.vat_included != "") {
+        final = final.filter(
+          t => t.vat_included == (this.filterToggles.vat_included == "yes")
+        );
+      }
+      if (this.filterToggles.money_transfer != "") {
+        final = final.filter(
+          t => t.money_transfer == (this.filterToggles.money_transfer == "yes")
+        );
+      }
+      final.expenseSum = final.reduce(
+        (a, t) => (asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a),
+        0
+      );
+      final.incomeSum = final.reduce(
+        (a, t) => (asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a),
+        0
+      );
+      final.sum = -final.reduce((a, t) => a - asNumber(t.amount), 0);
+      return final;
     },
-    methods: {
-        onNewTxData: function (data) {
-            this.transactions = data;
+    annual: function() {
+      function asNumber(value) {
+        return typeof value == "string" ? parseFloat(value) : value;
+      }
+
+      function eSt(amount) {
+        const brackets = [
+          [11000, 0],
+          [18000, 0.25],
+          [31000, 0.35],
+          [60000, 0.42],
+          [90000, 0.48],
+          [999999999, 0.5]
+        ];
+        let last = 0;
+        let sum = 0;
+        for (const bracket of brackets) {
+          const bracketAmount = Math.min(
+            bracket[0] - last,
+            Math.max(0, amount - last)
+          );
+          sum += bracketAmount * bracket[1];
+          last = bracket[0];
         }
-    },
-    data: {
-        activeView: "transactions",
-        views: [{
-            id: "transactions",
-            label: "Buchungen"
-        }, {
-            id: "annual",
-            label: "Gewinnversteuerung"
-        }],
+        return sum;
+      }
 
-        txFromDate: "",
-        txToDate: "",
-        txSearchTerm: "",
-        transactions: [],
+      const uvBeitrag = 117.49;
+      const pvMinGrundlage = 7851;
+      const kvMinGrundlage = 5256.6;
+      const maxGrundlage = 71820;
 
-        annualYear: 2019
+      const byDate = this.transactions.filter(
+        t =>
+          this.annualYear + "-01-01" <= t.date &&
+          this.annualYear + "-12-31" >= t.date
+      );
+
+      const deduced = byDate.filter(t => t.deductiontype != "none");
+
+      byDate.vatSum = deduced.reduce(
+        (a, t) => (t.vat_included ? a + asNumber(t.amount) : a),
+        0
+      );
+
+      byDate.expenseSum = deduced.reduce(
+        (a, t) => (asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a),
+        0
+      );
+      byDate.incomeSum = deduced.reduce(
+        (a, t) => (asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a),
+        0
+      );
+      byDate.sum = -deduced.reduce((a, t) => a - asNumber(t.amount), 0);
+
+      const realTxs = byDate.filter(
+        t => t.money_transfer || t.deductiontype == "none"
+      );
+
+      byDate.realExpenseSum = realTxs.reduce(
+        (a, t) => (asNumber(t.amount) < 0 ? a - asNumber(t.amount) : a),
+        0
+      );
+      byDate.realIncomeSum = realTxs.reduce(
+        (a, t) => (asNumber(t.amount) > 0 ? a + asNumber(t.amount) : a),
+        0
+      );
+      byDate.realSum = -realTxs.reduce((a, t) => a - asNumber(t.amount), 0);
+
+      const pvBeitrag =
+        Math.min(Math.max(byDate.sum, pvMinGrundlage), maxGrundlage) * 0.185;
+      byDate.pvBeitrag = pvBeitrag;
+      const kvBeitrag =
+        Math.min(Math.max(byDate.sum, kvMinGrundlage), maxGrundlage) * 0.0765;
+      byDate.kvBeitrag = this.annualYear < 2021 ? 402.12 : kvBeitrag;
+      byDate.uvBeitrag = uvBeitrag;
+
+      byDate.est = eSt(byDate.sum);
+
+      return byDate;
     }
+  },
+  methods: {
+    onClickToggleFilterButton: function(dataKey) {
+      this.filterToggles[dataKey] = { "": "yes", yes: "no", no: "" }[
+        this.filterToggles[dataKey]
+      ];
+    },
+    onNewTxData: function(data) {
+      this.transactions = data;
+    }
+  },
+  data: {
+    activeView: "transactions",
+    views: [
+      {
+        id: "transactions",
+        label: "Buchungen"
+      },
+      {
+        id: "annual",
+        label: "Gewinnversteuerung"
+      }
+    ],
+
+    txFromDate: "",
+    txToDate: "",
+    txSearchTerm: "",
+    transactions: [],
+
+    filterToggles: {
+      settled: "",
+      official: "",
+      vat_included: "",
+      money_transfer: ""
+    },
+    filterToggleClass: {
+      settled: "fas fa-euro-sign",
+      official: "fas fa-file-invoice-dollar",
+      vat_included: "fas fa-percentage",
+      money_transfer: "fas fa-money-bill-wave-alt"
+    },
+
+    annualYear: 2019
+  }
 });
