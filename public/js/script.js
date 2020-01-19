@@ -231,14 +231,13 @@ new Vue({
       if (this.filterToggles.settled != "") {
         final = final.filter(
           t =>
-            t.amount > 0 && t.settled == (this.filterToggles.settled == "yes")
+            t.amount > 0 && !!t.settled == (this.filterToggles.settled == "yes")
         );
       }
       if (this.filterToggles.official != "") {
         final = final.filter(
           t =>
-            (t.deductiontype == "normal") ==
-            (this.filterToggles.official == "yes")
+            (t.deductiontype == "none") == (this.filterToggles.official == "no")
         );
       }
       if (this.filterToggles.vat_included != "") {
