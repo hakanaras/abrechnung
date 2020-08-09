@@ -1,4 +1,5 @@
 const { Client } = require("pg");
+const fs = require("fs");
 
 const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -6,6 +7,8 @@ const client = new Client({
 });
 
 client.connect();
+
+const regulars = JSON.parse(fs.readFileSync("./regulars.json").toString());
 
 async function sql(command) {
     const result = await client.query(command);
@@ -32,6 +35,14 @@ async function insertTx(date, amount, description) {
     return selectAll();
 }
 
+async function insertTxRegulars(date) {
+    for (const regular in regulars) {
+        await client.query(`INSERT INTO transactions (date_, amount, description, settled, deductionType, vat_included, money_transfer) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                [date, regular.amount, regular.description, regular.settled, regular.deductiontype, regular.vat_included, regular.money_transfer]);
+    }
+    return selectAll();
+}
+
 async function settleTx(id, settled) {
     const result = await client.query(`UPDATE transactions SET settled = $1 WHERE id = $2`, [settled, id]);
     return selectAll();
@@ -47,4 +58,4 @@ async function deleteTx(id) {
     return selectAll();
 }
 
-module.exports = { sql, selectAll, setVatIncluded, setMoneyTransfer, insertTx, settleTx, updateTx, deleteTx };
+module.exports = { sql, selectAll, setVatIncluded, setMoneyTransfer, insertTx, insertTxRegulars, settleTx, updateTx, deleteTx };

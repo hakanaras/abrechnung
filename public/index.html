@@ -112,6 +112,20 @@
               <i :class="filterToggleClass[dataKey]"></i>
             </button>
           </div>
+          <div class="col-lg-4"></div>
+          <div class="col-lg-4">
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Datum: </span>
+              </div>
+              <input type="date" class="form-control" v-model="txRegularsDate" />
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" @click="onClickAddRegulars()">
+                  <i class="fas fa-save"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <table class="table table-bordered table-sm">
           <thead>

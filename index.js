@@ -28,6 +28,12 @@ app.post("/tx", async function (req, res) {
     res.end(JSON.stringify(result));
 });
 
+app.post("/tx_regulars", async function (req, res) {
+    const result = await db.insertTxRegulars(req.body.date);
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(result));
+});
+
 app.post("/tx/vat_included", async function (req, res) {
     const result = await db.setVatIncluded(req.body.id, req.body.vat_included);
     res.setHeader("Content-Type", "application/json");

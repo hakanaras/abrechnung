@@ -351,6 +351,21 @@ new Vue({
     },
     onNewTxData: function(data) {
       this.transactions = data;
+    },
+    onClickAddRegulars: function () {
+      if (!this.txRegularsDate) {
+        return window.alert("Ungültiges Datum!");
+      }
+      $.ajax({
+        url: "/tx_regulars",
+        type: "POST",
+        data: {
+          date: this.txRegularsDate
+        },
+        success: data => {
+          this.onNewTxData(data);
+        }
+      });
     }
   },
   data: {
@@ -365,6 +380,8 @@ new Vue({
         label: "Gewinnversteuerung"
       }
     ],
+
+    txRegularsDate: "",
 
     txFromDate: "",
     txToDate: "",
