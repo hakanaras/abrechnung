@@ -259,6 +259,9 @@ new Vue({
         0
       );
       final.sum = -final.reduce((a, t) => a - asNumber(t.amount), 0);
+      if (!this.showAll) {
+        final.splice(50);
+      }
       return final;
     },
     annual: function() {
@@ -352,6 +355,9 @@ new Vue({
     onNewTxData: function(data) {
       this.transactions = data;
     },
+    onClickToggleShowAll: function() {
+      this.showAll = !this.showAll;
+    },
     onClickAddRegulars: function () {
       if (!this.txRegularsDate) {
         return window.alert("Ungültiges Datum!");
@@ -387,6 +393,8 @@ new Vue({
     txToDate: "",
     txSearchTerm: "",
     transactions: [],
+
+    showAll: false,
 
     filterToggles: {
       settled: "",
