@@ -247,6 +247,7 @@ async function insertTxRegulars(date) {
         }
      ]`);
     for (const regular in regulars) {
+        console.dir(regular);
         await client.query(`INSERT INTO transactions (date_, amount, description, settled, deductionType, vat_included, money_transfer) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
                 [date, regular.amount, regular.description, regular.settled, regular.deductiontype, regular.vat_included, regular.money_transfer]);
     }
