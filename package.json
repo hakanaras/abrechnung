@@ -11,5 +11,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "pg": "^7.10.0"
+  },
+  "engines": {
+	"node": "^12"
   }
 }
