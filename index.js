@@ -63,3 +63,22 @@ app.delete("/:user/tx", async function (req, res) {
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(result));
 });
+
+console.log(`
+     OOOOOOOOO     KKKKKKKKK    KKKKKKK
+   OO:::::::::OO   K:::::::K    K:::::K
+ OO:::::::::::::OO K:::::::K    K:::::K
+O:::::::OOO:::::::OK:::::::K   K::::::K
+O::::::O   O::::::OKK::::::K  K:::::KKK
+O:::::O     O:::::O  K:::::K K:::::K   
+O:::::O     O:::::O  K::::::K:::::K    
+O:::::O     O:::::O  K:::::::::::K     
+O:::::O     O:::::O  K:::::::::::K     
+O:::::O     O:::::O  K::::::K:::::K    
+O:::::O     O:::::O  K:::::K K:::::K   
+O::::::O   O::::::OKK::::::K  K:::::KKK
+O:::::::OOO:::::::OK:::::::K   K::::::K
+ OO:::::::::::::OO K:::::::K    K:::::K
+   OO:::::::::OO   K:::::::K    K:::::K
+     OOOOOOOOO     KKKKKKKKK    KKKKKKK
+`);

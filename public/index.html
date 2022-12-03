@@ -24,6 +24,11 @@
   <body>
     <div id="vue-app" class="container-fluid">
       <div class="text-center">
+        <div class="mb-3">
+          <button type="button" @click="onClickUser()" :class="{'btn': true, 'btn-lg': true, 'btn-success': currentUser == 'ibrahim', 'btn-info': currentUser == 'fatih'}">
+            {{ currentUser }}
+          </button>
+        </div>
         <div class="btn-group mb-3" role="group">
           <button
             v-for="view in views"
@@ -32,9 +37,6 @@
             :class="{'btn': true, 'btn-sm': true, 'btn-secondary': activeView != view.id, 'btn-primary': activeView == view.id}"
           >
             {{ view.label }}
-          </button>
-          <button type="button" @click="onClickUser()" :class="{'btn': true, 'btn-sm': true}">
-            {{ currentUser }}
           </button>
         </div>
       </div>
