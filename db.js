@@ -1,19 +1,10 @@
 const fs = require("fs");
 
-<<<<<<< HEAD
 const sqlite3 = require("sqlite3").verbose();
 const db = {
     ibrahim: new sqlite3.Database("../daten/ibrahim"),
     fatih: new sqlite3.Database("../daten/fatih")
 };
-=======
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
-
-client.connect();
->>>>>>> 4b520b6f2b1ccc901f2d96843959323c5dbd18ce
 
 const regulars = JSON.parse(fs.readFileSync("./regulars.json").toString());
 
@@ -97,8 +88,4 @@ function string(value) {
     return !!value ? "'" + value + "'" : "null";
 }
 
-<<<<<<< HEAD
 module.exports = { sql, selectAll, setVatIncluded, setMoneyTransfer, insertTx, insertTxRegulars, settleTx, updateTx, deleteTx, exec, query };
-=======
-module.exports = { sql, selectAll, setVatIncluded, setMoneyTransfer, insertTx, insertTxRegulars, settleTx, updateTx, deleteTx };
->>>>>>> 4b520b6f2b1ccc901f2d96843959323c5dbd18ce
