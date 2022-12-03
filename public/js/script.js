@@ -1,3 +1,5 @@
+let vueInstance;
+
 Vue.mixin({
   methods: {
     currencyFormat: function(value) {
@@ -10,10 +12,15 @@ Vue.mixin({
 });
 
 Vue.component("tx-table-row", {
+  computed: {
+    currentUser: function() {
+      return vueInstance.currentUser;
+    }
+  },
   methods: {
     onClickMoneyTransfer: function() {
       $.post(
-        "/tx/money_transfer",
+        "/" + this.currentUser + "/tx/money_transfer",
         { id: this.tx.id, money_transfer: !this.tx.money_transfer },
         data => {
           this.$emit("new-tx-data", data);
@@ -22,7 +29,7 @@ Vue.component("tx-table-row", {
     },
     onClickVatIncluded: function() {
       $.post(
-        "/tx/vat_included",
+        "/" + this.currentUser + "/tx/vat_included",
         { id: this.tx.id, vat_included: !this.tx.vat_included },
         data => {
           this.$emit("new-tx-data", data);
@@ -35,8 +42,8 @@ Vue.component("tx-table-row", {
         type +
         "' WHERE id=" +
         this.tx.id;
-      $.post("/sql", { command }, () => {
-        $.get("/tx", data => {
+      $.post("/" + this.currentUser + "/sql", { command }, () => {
+        $.get("/" + this.currentUser + "/tx", data => {
           this.$emit("new-tx-data", data);
         });
       });
@@ -46,7 +53,7 @@ Vue.component("tx-table-row", {
         return window.alert("Ungültiges Datum!");
       }
       $.post(
-        "/tx",
+        "/" + this.currentUser + "/tx",
         {
           date: this.dateInput,
           amount: this.amountInput,
@@ -64,7 +71,7 @@ Vue.component("tx-table-row", {
         return window.alert("Ungültiges Datum!");
       }
       $.ajax({
-        url: "/tx",
+        url: "/" + this.currentUser + "/tx",
         type: "PUT",
         data: {
           id: this.tx.id,
@@ -83,7 +90,7 @@ Vue.component("tx-table-row", {
         return;
       }
       $.ajax({
-        url: "/tx",
+        url: "/" + this.currentUser + "/tx",
         type: "DELETE",
         data: { id: this.tx.id },
         success: data => {
@@ -99,7 +106,7 @@ Vue.component("tx-table-row", {
     },
     onClickSettle: function() {
       $.post(
-        "/tx/settle",
+        "/" + this.currentUser + "/tx/settle",
         {
           id: this.tx.id,
           settled: this.settledInput
@@ -200,10 +207,10 @@ Vue.component("tx-table-row", {
     </tr>`
 });
 
-new Vue({
+vueInstance = new Vue({
   el: "#vue-app",
   created: function() {
-    $.get("/tx", data => {
+    $.get("/" + this.currentUser + "/tx", data => {
       this.transactions = data;
     });
   },
@@ -363,7 +370,7 @@ new Vue({
         return window.alert("Ungültiges Datum!");
       }
       $.ajax({
-        url: "/tx_regulars",
+        url: "/" + this.currentUser + "/tx_regulars",
         type: "POST",
         data: {
           date: this.txRegularsDate
@@ -372,9 +379,16 @@ new Vue({
           this.onNewTxData(data);
         }
       });
+    },
+    onClickUser: function() {
+      this.currentUser = this.currentUser == 'fatih' ? 'ibrahim' : 'fatih';
+      $.get("/" + this.currentUser + "/tx", data => {
+        this.transactions = data;
+      });
     }
   },
   data: {
+    currentUser: "ibrahim",
     activeView: "transactions",
     views: [
       {

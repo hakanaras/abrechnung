@@ -1,61 +1,91 @@
-const { Client } = require("pg");
 const fs = require("fs");
 
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
-});
-
-client.connect();
+const sqlite3 = require("sqlite3").verbose();
+const db = {
+    ibrahim: new sqlite3.Database("../daten/ibrahim"),
+    fatih: new sqlite3.Database("../daten/fatih")
+};
 
 const regulars = JSON.parse(fs.readFileSync("./regulars.json").toString());
 
-async function sql(command) {
-    const result = await client.query(command);
-    return result;
+async function sql(user, command) {
+    return await query(user, command);
 }
 
-async function selectAll() {
-    const result = await client.query(`SELECT id, amount, description, TO_CHAR(settled, 'YYYY-MM-DD') as "settled", TO_CHAR(date_, 'YYYY-MM-DD') as \"date\", deductionType, vat_included, money_transfer FROM transactions ORDER BY date_ DESC, id DESC`);
-    return result.rows;
+async function selectAll(user) {
+    return await query(user, `SELECT id, amount, description, settled, date_ as "date", deductionType, vat_included, money_transfer FROM transactions ORDER BY date_ DESC, id DESC`);
 }
 
-async function setVatIncluded(id, vatIncluded) {
-    const result = await client.query(`UPDATE transactions SET vat_included = $1 WHERE id = $2`, [vatIncluded, id]);
-    return selectAll();
+async function setVatIncluded(user, id, vat_included) {
+    await exec(user, `UPDATE transactions SET vat_included = ${vat_included} WHERE id = ${id}`);
+    return await selectAll(user);
 }
 
-async function setMoneyTransfer(id, money_transfer) {
-    const result = await client.query(`UPDATE transactions SET money_transfer = $1 WHERE id = $2`, [money_transfer, id]);
-    return selectAll();
+async function setMoneyTransfer(user, id, money_transfer) {
+    await exec(user, `UPDATE transactions SET money_transfer = ${money_transfer} WHERE id = ${id}`);
+    return await selectAll(user);
 }
 
-async function insertTx(date, amount, description) {
-    const result = await client.query(`INSERT INTO transactions (date_, amount, description, settled) VALUES ($1, $2, $3, $4)`, [date, amount, description, null]);
-    return selectAll();
+async function insertTx(user, date, amount, description) {
+    await exec(user, `INSERT INTO transactions (date_, amount, description, settled) VALUES (${string(date)}, ${amount}, ${string(description)}, null)`);
+    return selectAll(user);
 }
 
-async function insertTxRegulars(date) {
+async function insertTxRegulars(user, date) {
     for (const regular of regulars) {
-        await client.query(`INSERT INTO transactions (date_, amount, description, settled, deductionType, vat_included, money_transfer) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                [date, "-0.01", regular.description, regular.settled, regular.deductiontype, regular.vat_included, regular.money_transfer]);
+        await exec(user, `INSERT INTO transactions (date_, amount, description, settled, deductionType, vat_included, money_transfer) VALUES (
+            ${string(date)}, -0.01, ${string(regular.description)}, ${string(regular.settled)}, ${string(regular.deductiontype)}, ${regular.vat_included}, ${regular.money_transfer}
+        )`);
     }
-    return selectAll();
+    return await selectAll(user);
 }
 
-async function settleTx(id, settled) {
-    const result = await client.query(`UPDATE transactions SET settled = $1 WHERE id = $2`, [settled, id]);
-    return selectAll();
+async function settleTx(user, id, settled) {
+    await exec(user, `UPDATE transactions SET settled = ${string(settled)} WHERE id = ${id}`);
+    return await selectAll(user);
 }
 
-async function updateTx(id, date, amount, description) {
-    const result = await client.query(`UPDATE transactions SET date_ = $1, amount = $2, description = $3 WHERE id = $4`, [date, amount, description, id]);
-    return selectAll();
+async function updateTx(user, id, date, amount, description) {
+    await exec(user, `UPDATE transactions SET date_ = ${string(date)}, amount = ${amount}, description = ${string(description)} WHERE id = ${id}`);
+    return await selectAll(user);
 }
 
-async function deleteTx(id) {
-    const result = await client.query(`DELETE FROM transactions WHERE id = $1`, [id]);
-    return selectAll();
+async function deleteTx(user, id) {
+    await exec(user, `DELETE FROM transactions WHERE id = ${id}`);
+    return await selectAll(user);
 }
 
-module.exports = { sql, selectAll, setVatIncluded, setMoneyTransfer, insertTx, insertTxRegulars, settleTx, updateTx, deleteTx };
+function query(user, command) {
+    return new Promise((resolve, reject) => {
+        db[user].serialize(() => {
+            const results = [];
+            db[user].each(command, (error, row) => {
+                if (error) reject(error);
+                else results.push(row);
+            }, (error, count) => {
+                if (error) reject(error);
+                else resolve(results);
+            })
+        });
+    });
+}
+
+function exec(user, command) {
+    return new Promise((resolve, reject) => {
+        db[user].serialize(() => {
+            db[user].run(command, (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    });
+}
+
+function string(value) {
+    return !!value ? "'" + value + "'" : "null";
+}
+
+module.exports = { sql, selectAll, setVatIncluded, setMoneyTransfer, insertTx, insertTxRegulars, settleTx, updateTx, deleteTx, exec, query };

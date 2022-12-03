@@ -33,6 +33,9 @@
           >
             {{ view.label }}
           </button>
+          <button type="button" @click="onClickUser()" :class="{'btn': true, 'btn-sm': true}">
+            {{ currentUser }}
+          </button>
         </div>
       </div>
       <div class="container" v-if="activeView == 'transactions'">
